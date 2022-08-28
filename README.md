@@ -37,6 +37,8 @@ data = [
 - The `mat_slots` table refers to the name of the material objects(slots) on the included FBX file for the unit. This FBX happens to have two materials attached to it called, `handle` and `shield`.
 
 - The `mat_to_use` key refers to the in game material file you plan on "hijacking" and `color_slot`, `norm_slot`, and `MAB_slot` keys refer to the name of the texture map on the hijacked material; you will need select an appropriate material to hijack based on your unit's properties. 
+    - If your material has a differnt file path than resource package it is located in then the resource package must be specified with the key:
+    ```mat_package = "path/to/resource_package"```
 
 - The `colors`, `normals`, and `MABs` tables are keys corressponding to the respective `mat_slots` whos values are file paths to the texture resources for your unit. 
 
