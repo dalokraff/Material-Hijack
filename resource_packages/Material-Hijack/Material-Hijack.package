@@ -1,0 +1,15 @@
+mod = [
+	"Material-Hijack"
+]
+
+package = [
+	"resource_packages/Material-Hijack/Material-Hijack"
+]
+
+lua = [
+	"scripts/mods/Material-Hijack/*"
+]
+
+texture = [
+  "textures/*"
+]
