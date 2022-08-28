@@ -23,6 +23,7 @@ local function replace_textures(unit)
         local emis_colors = {}
         local emis_details = {}
 
+        --if material and package resource do not share the same path this will load the package if the package path is provided
         local mat = Unit.get_data(unit, "mat_to_use")
         local package_to_use = mat
         if Unit.has_data(unit, "mat_package") then
@@ -41,6 +42,8 @@ local function replace_textures(unit)
         local num_mats = count - 1
         local dict = {}
         for i=1, num_mats, 1 do
+            
+            --use "clean" textures maps for each slot in case no texture is provided by a unit
             colors[i] = "textures/default_col"
             normals[i] = "textures/T_Texture_NR"
             MABs[i] = "textures/T_Texture_MOS"
