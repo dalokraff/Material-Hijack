@@ -1,5 +1,5 @@
 # Material-Hijack
-This mod is ment as a modding utility for Vermintide 2; adding in a few lua hooks to make loading custom units and their textures easier. Instead of having to define a material file and have the proper shader nodes/files when building your own mod bundle with [VMB](https://github.com/Vermintide-Mod-Framework/Vermintide-Mod-Builder), this mod will let you choose an in game material to apply to your custom unit and then replace that material's texture maps with your own. 
+This mod is ment as a modding utility for Vermintide 2; adding in a few lua hooks to make loading custom units and their textures easier. Instead of having to define a material file and have the proper shader nodes/files when building your own mod bundle with [VMB](https://github.com/Vermintide-Mod-Framework/Vermintide-Mod-Builder), this mod will let you choose an in game material to apply to your custom unit and then replace that material's texture maps with your own. For more info on creating custom units check out the [VMF docs](https://vmf-docs.verminti.de/#/units)
 
 [Steamworkshop Page](https://steamcommunity.com/sharedfiles/filedetails/?id=2771980886)
 
