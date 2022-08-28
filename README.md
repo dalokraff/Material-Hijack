@@ -454,7 +454,7 @@ Once you've choosen a material you'll need to figure out the names of the corres
 
 ## Known Combinations
 In the intrest of saving time, I typically only use a few, already guessed material and texture map combinations
-|Material|Color Map|Normal Map|MABs Map|Emissive Color Map|Emissive Detail Map|
+|Material|Color Map/```color_slot```|Normal Map/```norm_slot```|MABs Map/```MAB_slot```|Emissive Color Map/```emis_col_slot```|Emissive Detail Map/```emis_det_slot```|
 |--------|---------|----------|--------|------------------|-------------------|
 |```units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2```|texture_map_c0ba2942|texture_map_59cd86b9|texture_map_0205ba86|N/A|N/A|
 |```units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1_runed_01_3p```|texture_map_c0ba2942|texture_map_59cd86b9|texture_map_0205ba86|texture_map_71d74d4d|texture_map_ee282ea2|
@@ -464,9 +464,12 @@ In the intrest of saving time, I typically only use a few, already guessed mater
 Due to some peculairites with the ``` Material.set_texture()``` function provided by Stingray's Lua API, the texture image resources that need to be provided, end up being packed textures. The color texture must provide the color and alpha channel inputs for the material in it's respective image's RGBA channels. The normal texture provides the normal channel input for the material. The MABs and Emissives maps are a bit more complicated. The MABs texture will provide the metallic channel in image's red channel, the roughness in the images green channel, and the blood splatter shape(think of how weapons get blood decals on them when you hit enemies) in the blue channel. The emisive color texture provides the RGB color for the materials emissive channel. The emissive detail map provides the shape of the emissive channel using just an image's gray/black and white channel.
 
 ## More Information
+#### Considerations
 This mod hooks only a few lua functions provied by the game to intercept the majority of non level units spawned by the game, and apply the hijacked materials to them: ```UnitSpawner.spawn_local_unit()```, ```GearUtils."create_equipment()```, and ```HeroPreviewer._spawn_item_unit()```. These three functions cover the vast majority of scenarios where you'd want to spawn a custom unit in game. As a consequence, instead of using ```World.spawn_unit()``` you will need to use the ```UnitSpawner.spawn_local_unit()``` which takes the same arguements; if you use ```World.destroy_unit()``` to remove a unit spawned with ```UnitSpawner.spawn_local_unit()```, you must first remove the unit from the game's global ```POSITION_LOOKUP``` table. 
 It is enough to simple do:
 ```
 POSITION_LOOKUP[unit] = nil
 World.destroy_unit(world, unit)
 ``` 
+#### Load Order
+This mod is agnostic to load order for depedant mods and funcitons by checking if a unit caught in one the hooked functions have the certain key names in their data block.
