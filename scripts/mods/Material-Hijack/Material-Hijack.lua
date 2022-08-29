@@ -61,23 +61,23 @@ local function replace_textures(unit)
             end
             if Unit.has_data(unit, "normals", "slot"..tostring(i)) then --normals is normal with roughness in the alpha channel
                 normals[i] = Unit.get_data(unit, "normals", "slot"..tostring(i))     
-                dict[mat_slots[i]]['norm_slot'] = Unit.get_data(unit, "normals", "slot"..tostring(i))
+                dict[mat_slots[i]]['norm_slot'] = Unit.get_data(unit, "normals", "slot"..tostring(i)) or "texture_map"
             else
                 dict[mat_slots[i]]['norm_slot'] = normals[i]
             end
             if Unit.has_data(unit, "MABs", "slot"..tostring(i)) then --MABs is metal, ambient occlussion, and subsurface scattering(sss); should be called "packed textures"
                 MABs[i] = Unit.get_data(unit, "MABs", "slot"..tostring(i))   
-                dict[mat_slots[i]]['MAB_slot'] = Unit.get_data(unit, "MABs", "slot"..tostring(i))
+                dict[mat_slots[i]]['MAB_slot'] = Unit.get_data(unit, "MABs", "slot"..tostring(i)) or "texture_map"
             else
                 dict[mat_slots[i]]['MAB_slot'] = MABs[i]
             end
             if Unit.has_data(unit, "emis_colors", "slot"..tostring(i)) then --controls the color/patterns of the emmissive map but not the overall shape of the map
                 emis_colors[i] = Unit.get_data(unit, "emis_colors", "slot"..tostring(i))  
-                dict[mat_slots[i]]['emis_col_slot'] = Unit.get_data(unit, "emis_colors", "slot"..tostring(i))          
+                dict[mat_slots[i]]['emis_col_slot'] = Unit.get_data(unit, "emis_colors", "slot"..tostring(i)) or "texture_map"      
             end
             if Unit.has_data(unit, "emis_details", "slot"..tostring(i)) then --not sure what this does actually as it doesn't seem to affect the emmissive map
                 emis_details[i] = Unit.get_data(unit, "emis_details", "slot"..tostring(i))    
-                dict[mat_slots[i]]['emis_det_slot'] = Unit.get_data(unit, "emis_details", "slot"..tostring(i))      
+                dict[mat_slots[i]]['emis_det_slot'] = Unit.get_data(unit, "emis_details", "slot"..tostring(i)) or "texture_map"    
             end
         end
 
@@ -91,7 +91,8 @@ local function replace_textures(unit)
                     if Mesh.has_material(mesh, mat_slot) then
                         local mater = Mesh.material(mesh, mat_slot)
                         for text_slot, map in pairs(texture) do
-                            Material.set_texture(mater, Unit.get_data(unit, text_slot), map)
+                            local tex_name = Unit.get_data(unit, text_slot) or "texture_map"
+                            Material.set_texture(mater, tex_name, map)
                         end
                     end
                 end
