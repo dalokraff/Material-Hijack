@@ -44,7 +44,7 @@ data = [
 
 To save yourself some time searching for the right material and texture map combinations you can just copy [some combinations I've already found](#known-combinations).
 ## Finding a Material
-Picking the material you want to hijack can be tricky as you will need to know respective file path to the material resource, and generally speaking this is not readily avaible to players or modders of Vermintide 2. Using some guess work about the file structure and naming convention Fatshark used for their games we can overcome this hurlde though. Generally speaking weapon skins found in the game's global [`WeaponSkins`](https://github.com/Aussiemon/Vermintide-2-Source-Code/blob/master/scripts/settings/equipment/weapon_skins.lua) table have the same `.unit` and `.material` file paths. From the starting example the resource path, `units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2`, is both the path of the `.unit` and `.material` file.
+Picking the material you want to hijack can be tricky as you will need to know respective file path to the material resource, and generally speaking this is not readily avaible to players or modders of Vermintide 2. Using some guess work about the file structure and naming convention Fatshark used for their games we can overcome this hurlde though. Generally speaking weapon skins found in the game's global [`WeaponSkins`](https://github.com/Aussiemon/Vermintide-2-Source-Code/blob/master/scripts/settings/equipment/weapon_skins.lua) table have the same `.unit` and `.material` file paths. From the starting example the resource path, `units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2`, is both the path of the `.unit` and `.material` file. It is worth saying that this is the first person material and first person unit of the weapon skin, the third person version is the same name but with a `_3p` at the end `units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2_3p` 
 
 ## Choosing a Material
 Now that you know where you can find some material files at you need to choose one. While most in game materials have diffuse, normal, metallic, and roughness channels; some channels like the alpha and emmissive are not present on every material so you'll want to make sure you pick a material that has all the material channels you plan using for your unit. I've basically just guessed and checked to determine if a given material has a channel or not. The glowing weapons have emmissive channels while the non-glowing ones typically do not. Items with "whispy" details like the flame dagger and helmets with feathers have alpha channles for the heat radiation and feather textures respectively. 
@@ -459,7 +459,13 @@ In the intrest of saving time, I typically only use a few, already guessed mater
 |Material|Color Map/```color_slot```|Normal Map/```norm_slot```|MABs Map/```MAB_slot```|Emissive Color Map/```emis_col_slot```|Emissive Detail Map/```emis_det_slot```|
 |--------|---------|----------|--------|------------------|-------------------|
 |```units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2```|texture_map_c0ba2942|texture_map_59cd86b9|texture_map_0205ba86|N/A|N/A|
+|```units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2_3p```|texture_map_c0ba2942|texture_map_59cd86b9|texture_map_0205ba86|N/A|N/A|
+|```units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1```|texture_map_c0ba2942|texture_map_59cd86b9|texture_map_0205ba86|N/A|N/A|
+|```units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1_3p```|texture_map_c0ba2942|texture_map_59cd86b9|texture_map_0205ba86|N/A|N/A|
+|```units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1_runed_01```|texture_map_c0ba2942|texture_map_59cd86b9|texture_map_0205ba86|texture_map_71d74d4d|texture_map_4617b8e0|
 |```units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1_runed_01_3p```|texture_map_c0ba2942|texture_map_59cd86b9|texture_map_0205ba86|texture_map_71d74d4d|texture_map_ee282ea2|
+|```units/beings/player/empire_soldier_knight/skins/black_and_gold/mtr_outfit_black_and_gold_1p```|texture_map_64cc5eb8|texture_map_861dbfdc|texture_map_b788717c|N/A|N/A|
+|```units/beings/player/empire_soldier_knight/skins/black_and_gold/mtr_outfit_black_and_gold```|texture_map_64cc5eb8|texture_map_861dbfdc|texture_map_abb81538|N/A|N/A|
 
 
 ## Nuances of Texture Resources
