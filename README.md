@@ -42,19 +42,19 @@ data = [
 
 - The `colors`, `normals`, and `MABs` tables are keys corressponding to the respective `mat_slots` whos values are file paths to the texture resources for your unit. 
 
-To save yourself some time searching for the right material and texture map combinations you can just copy [some combinations I've already found](#known-combinations).
-## Finding a Material
+### **To save yourself some time searching for the right material and texture map combinations you can just copy [some combinations I've already found](#known-combinations).**
+#### Finding a Material
 Picking the material you want to hijack can be tricky as you will need to know respective file path to the material resource, and generally speaking this is not readily avaible to players or modders of Vermintide 2. Using some guess work about the file structure and naming convention Fatshark used for their games we can overcome this hurlde though. Generally speaking weapon skins found in the game's global [`WeaponSkins`](https://github.com/Aussiemon/Vermintide-2-Source-Code/blob/master/scripts/settings/equipment/weapon_skins.lua) table have the same `.unit` and `.material` file paths. From the starting example the resource path, `units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2`, is both the path of the `.unit` and `.material` file. It is worth saying that this is the first person material and first person unit of the weapon skin, the third person version is the same name but with a `_3p` at the end `units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2_3p` 
 
-## Choosing a Material
+#### Choosing a Material
 Now that you know where you can find some material files at you need to choose one. While most in game materials have diffuse, normal, metallic, and roughness channels; some channels like the alpha and emmissive are not present on every material so you'll want to make sure you pick a material that has all the material channels you plan using for your unit. I've basically just guessed and checked to determine if a given material has a channel or not. The glowing weapons have emmissive channels while the non-glowing ones typically do not. Items with "whispy" details like the flame dagger and helmets with feathers have alpha channles for the heat radiation and feather textures respectively. 
 
-## Finding the Texture Maps
+#### Finding the Texture Maps
 Once you've choosen a material you'll need to figure out the names of the corresponding texture maps for that material. This is no easy endevour and basically requires that you guess and check. Below is a list of all texture map names I found by searching the material files, using the [VT2 Bundle Unpacker](https://gitlab.com/lschwiderski/vt2_bundle_unpacker). Each map name corresponds to some sort of compressed texture resource. Following the [above example](#example-data-block), ```texture_map_59cd86b9``` is the texture map name of the normal channel used by the ```units/weapons/player/wpn_empire_handgun_02_t2/wpn_empire_handgun_02_t2.material``` material. 
 <details>
   <summary>Reveal Map names</summary>
   
-  ### Texture Maps
+  ##### Texture Maps
   ```texture_map_06d47a4f```
 ```texture_map_b1e5220a```
 ```texture_map_ac93ba11```
