@@ -111,11 +111,110 @@ local function replace_textures(unit)
     end
 end
 
+
+local function add_particles(unit)
+
+    if Unit.has_data(unit, "particles") then
+        local world = Managers.world:world("level_world")
+
+        local node_part_pairs = Unit.get_data(unit, "particles", "node_part_pairs")
+
+        for i=1, node_part_pairs, 1 do
+            local pacakge = Unit.get_data(unit, "particles", "node_map",tostring(i),"package")
+            if pacakge then
+                Managers.package:load(pacakge, "global")
+            end
+
+            local fx = Unit.get_data(unit, "particles",tostring(i),"fx")
+            local node = Unit.get_data(unit, "particles",tostring(i),"node")
+
+            local translation_rotation = Matrix4x4.identity()
+            if Unit.has_data(unit, "particles",tostring(i),"offset") then
+                local x = Unit.get_data(unit, "particles",tostring(i),"offset", "x")
+                local y = Unit.get_data(unit, "particles",tostring(i),"offset", "y")
+                local z = Unit.get_data(unit, "particles",tostring(i),"offset", "z")
+
+                Matrix4x4.set_element(translation_rotation, 4, 1, x)
+                Matrix4x4.set_element(translation_rotation, 4, 2, y)
+                Matrix4x4.set_element(translation_rotation, 4, 3, z)
+
+            end
+
+            local particle_id = World.create_particles(world, fx, Vector3(0,0,0))
+            World.link_particles(world, particle_id, unit, node, translation_rotation,"destroy")
+            Unit.set_data(unit, "has_linked_particles", particle_id)
+        end
+    end
+end
+
+mod:hook(Unit, "set_unit_visibility", function(func, unit, visibility)
+
+    if Unit.get_data(unit, "inactive_particles") then
+        if visibility then
+            add_particles(unit)
+            Unit.set_data(unit, "inactive_particles", false)
+        end
+    end
+    if Unit.has_data(unit, "has_linked_particles") then
+        local world = Managers.world:world("level_world")
+        if not visibility then 
+            World.destroy_particles ( world, Unit.get_data(unit, "has_linked_particles") )
+            Unit.set_data(unit, "inactive_particles", true)
+        end
+    end
+
+    
+    return func(unit, visibility)
+end)
+
+mod:hook(Unit, "set_visibility", function(func, unit, group, visibility)
+
+    if Unit.get_data(unit, "inactive_particles") then
+        if visibility then
+            add_particles(unit)
+            Unit.set_data(unit, "inactive_particles", false)
+        end
+    end
+    if Unit.has_data(unit, "has_linked_particles") then
+        local world = Managers.world:world("level_world")
+        if not visibility then 
+            World.destroy_particles ( world, Unit.get_data(unit, "has_linked_particles") )
+            Unit.set_data(unit, "inactive_particles", true)
+        end
+    end
+
+    
+    return func(unit, group, visibility)
+end)
+
+
+mod:hook(Unit, "set_mesh_visibility", function(func, unit, mesh, visibility, context)
+
+    if Unit.get_data(unit, "inactive_particles") then
+        if visibility then
+            add_particles(unit)
+            Unit.set_data(unit, "inactive_particles", false)
+        end
+    end
+    if Unit.has_data(unit, "has_linked_particles") then
+        local world = Managers.world:world("level_world")
+        if not visibility then 
+            World.destroy_particles ( world, Unit.get_data(unit, "has_linked_particles") )
+            Unit.set_data(unit, "inactive_particles", true)
+        end
+    end
+
+    
+    return func(unit, mesh, visibility, context)
+end)
+
 --these hooks cover the spawning of all unit types that are not local/client only game objects
 mod:hook(GearUtils, "create_equipment", --this hook is probably reduntant with the spawn_local_unit hook
 function(func, world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
     replace_textures(unit_1p)
     replace_textures(unit_3p)
+    add_particles(unit_1p)
+    add_particles(unit_3p)
     return func(world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
 end)
 
@@ -129,12 +228,14 @@ mod:hook(UnitSpawner, 'spawn_local_unit', function (func, self, unit_name, posit
 
 	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
     replace_textures(unit)
+    add_particles(unit)
 	return unit
 end)
 
 
 mod:hook(HeroPreviewer, '_spawn_item_unit', function (func, self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
     replace_textures(unit)
+    add_particles(unit)
     return func(self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
 end)
 
