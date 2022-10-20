@@ -112,10 +112,9 @@ local function replace_textures(unit)
 end
 
 
-local function add_particles(unit)
+local function add_particles(unit, world)
 
     if Unit.has_data(unit, "particles") then
-        local world = Managers.world:world("level_world")
 
         local node_part_pairs = Unit.get_data(unit, "particles", "node_part_pairs")
 
@@ -148,15 +147,15 @@ local function add_particles(unit)
 end
 
 mod:hook(Unit, "set_unit_visibility", function(func, unit, visibility)
-
+    local world = Unit.world(unit)
     if Unit.get_data(unit, "inactive_particles") then
         if visibility then
-            add_particles(unit)
+            add_particles(unit, world)
             Unit.set_data(unit, "inactive_particles", false)
         end
     end
     if Unit.has_data(unit, "has_linked_particles") then
-        local world = Managers.world:world("level_world")
+        
         if not visibility then 
             World.destroy_particles ( world, Unit.get_data(unit, "has_linked_particles") )
             Unit.set_data(unit, "inactive_particles", true)
@@ -168,15 +167,15 @@ mod:hook(Unit, "set_unit_visibility", function(func, unit, visibility)
 end)
 
 mod:hook(Unit, "set_visibility", function(func, unit, group, visibility)
-
+    local world = Unit.world(unit)
     if Unit.get_data(unit, "inactive_particles") then
         if visibility then
-            add_particles(unit)
+            add_particles(unit, world)
             Unit.set_data(unit, "inactive_particles", false)
         end
     end
     if Unit.has_data(unit, "has_linked_particles") then
-        local world = Managers.world:world("level_world")
+
         if not visibility then 
             World.destroy_particles ( world, Unit.get_data(unit, "has_linked_particles") )
             Unit.set_data(unit, "inactive_particles", true)
@@ -189,15 +188,15 @@ end)
 
 
 mod:hook(Unit, "set_mesh_visibility", function(func, unit, mesh, visibility, context)
-
+    local world = Unit.world(unit)
     if Unit.get_data(unit, "inactive_particles") then
         if visibility then
-            add_particles(unit)
+            add_particles(unit, world)
             Unit.set_data(unit, "inactive_particles", false)
         end
     end
     if Unit.has_data(unit, "has_linked_particles") then
-        local world = Managers.world:world("level_world")
+        
         if not visibility then 
             World.destroy_particles ( world, Unit.get_data(unit, "has_linked_particles") )
             Unit.set_data(unit, "inactive_particles", true)
@@ -213,8 +212,8 @@ mod:hook(GearUtils, "create_equipment", --this hook is probably reduntant with t
 function(func, world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
     replace_textures(unit_1p)
     replace_textures(unit_3p)
-    add_particles(unit_1p)
-    add_particles(unit_3p)
+    add_particles(unit_1p, world)
+    add_particles(unit_3p, world)
     return func(world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
 end)
 
@@ -228,14 +227,14 @@ mod:hook(UnitSpawner, 'spawn_local_unit', function (func, self, unit_name, posit
 
 	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
     replace_textures(unit)
-    add_particles(unit)
+    add_particles(unit, self.world)
 	return unit
 end)
 
 
 mod:hook(HeroPreviewer, '_spawn_item_unit', function (func, self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
     replace_textures(unit)
-    add_particles(unit)
+    add_particles(unit, self.world)
     return func(self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
 end)
 
