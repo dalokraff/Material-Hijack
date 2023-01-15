@@ -24,20 +24,26 @@ AnimTextureExtension.init = function (self, unit)
 
     self.unit_time = {}
 
-    
+    self.texture_slot_names = {}
 
     if Unit.has_data(unit, "animation") then
         for i=1, 5, 1 do
             if Unit.has_data(unit, "animation", "slot"..tostring(i)) then
-                -- self.frame_delay["slot"..tostring(i)] = {}
-                -- self.loop_on_spawn["slot"..tostring(i)] = {}
-                -- self.num_of_loops["slot"..tostring(i)] = {}
 
                 self:get_frames(unit, "slot"..tostring(i), "colors")
+                self:get_texture_slot_names(unit, "colors")
+
                 self:get_frames(unit, "slot"..tostring(i), "normals")
+                self:get_texture_slot_names(unit, "normals")
+
                 self:get_frames(unit, "slot"..tostring(i), "MABs")
+                self:get_texture_slot_names(unit, "MABs")
+
                 self:get_frames(unit, "slot"..tostring(i), "emis_colors")
+                self:get_texture_slot_names(unit, "emis_colors")
+
                 self:get_frames(unit, "slot"..tostring(i), "emis_details")
+                self:get_texture_slot_names(unit, "emis_details")
             end
         end
     else
@@ -140,6 +146,20 @@ AnimTextureExtension.get_materials = function (self, unit)
     end
 end
 
+
+local slot_key_dict = {
+    colors = "color_slot",
+    normals = "norm_slot",
+    MABs = "MAB_slot",
+    emis_colors = "emis_col_slot",
+    emis_details = "emis_det_slot",
+}
+
+AnimTextureExtension.get_texture_slot_names = function (self, unit, slot_type)
+    local texture_slot_key = slot_key_dict[slot_type]
+    self.texture_slot_names[slot_type] = Unit.get_data(unit, texture_slot_key)    
+end
+
 AnimTextureExtension.update = function (self, dt, unit)
     -- local unit = self.unit
     if not Unit.alive(unit) then
@@ -158,8 +178,8 @@ AnimTextureExtension.update = function (self, dt, unit)
                 local material = material_dict[mat_slot]
                 local frame_number = (self.frame_numbers[mat_slot][slot_type]["current_number"] % self.frame_numbers[mat_slot][slot_type]["max_number"]) + 1
                 local texture = self.aniamted_channels[mat_slot][slot_type][frame_number]
-                
-                Material.set_texture(material, "texture_map_71d74d4d", texture)
+                local texure_slot_name = self.texture_slot_names[slot_type]
+                Material.set_texture(material, texure_slot_name, texture)
 
                 self.frame_numbers[mat_slot][slot_type]["current_number"] = frame_number + 1
                 self.unit_time[mat_slot][slot_type] = 0
@@ -179,5 +199,6 @@ AnimTextureExtension.destroy = function(self)
     self.unit_time = nil
     self.unit_mat_dict = nil
     self.frame_numbers = nil
+    self.texture_slot_names = nil
     return
 end
