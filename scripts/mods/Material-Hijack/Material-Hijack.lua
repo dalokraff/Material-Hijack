@@ -1,5 +1,7 @@
 local mod = get_mod("Material-Hijack")
 
+mod:dofile("scripts/mods/Material-Hijack/anim_texture_extension")
+
 -- Your mod code goes here.
 -- https://vmf-docs.verminti.de
 
@@ -214,6 +216,8 @@ function(func, world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_templ
     replace_textures(unit_3p)
     add_particles(unit_1p, world)
     add_particles(unit_3p, world)
+    -- AnimTextureExtension:new(unit_1p)
+    -- AnimTextureExtension:new(unit_3p)
     return func(world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
 end)
 
@@ -228,6 +232,10 @@ mod:hook(UnitSpawner, 'spawn_local_unit', function (func, self, unit_name, posit
 	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
     replace_textures(unit)
     add_particles(unit, self.world)
+    local new = AnimTextureExtension:new(unit)
+    if new.unit_time then
+        mod.texture_animations[unit] = new
+    end
 	return unit
 end)
 
@@ -235,6 +243,10 @@ end)
 mod:hook(HeroPreviewer, '_spawn_item_unit', function (func, self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
     replace_textures(unit)
     add_particles(unit, self.world)
+    local new = AnimTextureExtension:new(unit)
+    if new.unit_time then
+        mod.texture_animations[unit] = new
+    end
     return func(self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
 end)
 
@@ -254,4 +266,12 @@ local function spawn_package_to_player (package_name)
 	end
   
 	return nil
+end
+
+
+mod.texture_animations = {}
+mod.update = function(dt)
+    for unit, object in pairs(mod.texture_animations) do
+        object:update(dt, unit)
+    end
 end
