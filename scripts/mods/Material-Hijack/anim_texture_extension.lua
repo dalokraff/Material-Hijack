@@ -15,7 +15,6 @@ AnimTextureExtension = class(AnimTextureExtension)
 
 AnimTextureExtension.init = function (self, unit)
     self.unit = unit
-    print(unit)
 
     self.aniamted_channels = {}
     self.frame_delay = {}
@@ -82,13 +81,6 @@ AnimTextureExtension.get_frames = function (self, unit, mat_slot_key, slot_type)
 
     self:get_num_of_loops(unit, mat_slot_key, mat_slot, slot_type)
 end
-
--- local player = Managers.player:local_player()
--- local player_unit = player.player_unit
--- local position = Unit.local_position(player_unit, 0)
--- local unit = Managers.state.unit_spawner:spawn_local_unit("units/Sword/SM_Dark_Elf_Sword", position)
--- mod:echo(Unit.get_data(unit, "animation", "slot1", "emis_colors", "1"))
-
 
 AnimTextureExtension.get_time = function (self, unit, mat_slot_key, mat_slot, slot_type)
     if not self.frame_delay[mat_slot] then
@@ -170,8 +162,6 @@ AnimTextureExtension.update = function (self, dt, unit)
                 Material.set_texture(material, "texture_map_71d74d4d", texture)
 
                 self.frame_numbers[mat_slot][slot_type]["current_number"] = frame_number + 1
-                mod:echo(delay_time)
-                mod:echo(current_time)
                 self.unit_time[mat_slot][slot_type] = 0
             end
             self.unit_time[mat_slot][slot_type] = self.unit_time[mat_slot][slot_type] + dt
