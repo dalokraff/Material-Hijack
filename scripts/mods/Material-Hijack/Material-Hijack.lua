@@ -228,6 +228,7 @@ mod:hook(UnitSpawner, 'spawn_local_unit', function (func, self, unit_name, posit
 
 	Unit.set_data(unit, "unique_id", unit_unique_id)
 	Unit.set_data(unit, "unit_name", unit_name)
+    mod:echo(unit_name)
 
 	POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
     replace_textures(unit)

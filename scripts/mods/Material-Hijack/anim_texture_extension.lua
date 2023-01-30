@@ -79,6 +79,7 @@ AnimTextureExtension.get_frames = function (self, unit, mat_slot_key, slot_type)
     self.frame_numbers[mat_slot][slot_type] = {
         current_number = 1,
         max_number = i-1,
+        loops = 0, 
     }
 
     self:get_time(unit, mat_slot_key, mat_slot, slot_type)
@@ -160,8 +161,7 @@ AnimTextureExtension.get_texture_slot_names = function (self, unit, slot_type)
     self.texture_slot_names[slot_type] = Unit.get_data(unit, texture_slot_key)    
 end
 
-AnimTextureExtension.update = function (self, dt, unit)
-    -- local unit = self.unit
+AnimTextureExtension.update = function (self, dt, unit)    
     if not Unit.alive(unit) then
         self:destroy()
         return
@@ -170,21 +170,36 @@ AnimTextureExtension.update = function (self, dt, unit)
     local time_list = self.unit_time
     local frame_delay_list = self.frame_delay
     local material_dict = self.unit_mat_dict
+    local loop_list = self.loop_on_spawn
+    local frame_numbers = self.frame_numbers
 
     for mat_slot, mat_data in pairs(frame_delay_list) do
         for slot_type, delay_time in pairs(mat_data) do 
-            local current_time = time_list[mat_slot][slot_type]
-            if current_time >= delay_time then
-                local material = material_dict[mat_slot]
-                local frame_number = (self.frame_numbers[mat_slot][slot_type]["current_number"] % self.frame_numbers[mat_slot][slot_type]["max_number"]) + 1
-                local texture = self.aniamted_channels[mat_slot][slot_type][frame_number]
-                local texure_slot_name = self.texture_slot_names[slot_type]
-                Material.set_texture(material, texure_slot_name, texture)
+            if loop_list[mat_slot][slot_type] then
+                local current_time = time_list[mat_slot][slot_type]
+                if current_time >= delay_time then
+                    local material = material_dict[mat_slot]
+                    local max_frame_number = frame_numbers[mat_slot][slot_type]["max_number"]
+                    local frame_number = (frame_numbers[mat_slot][slot_type]["current_number"] % max_frame_number) + 1
+                    local texture = self.aniamted_channels[mat_slot][slot_type][frame_number]
+                    local texure_slot_name = self.texture_slot_names[slot_type]
 
-                self.frame_numbers[mat_slot][slot_type]["current_number"] = frame_number + 1
-                self.unit_time[mat_slot][slot_type] = 0
+                    mod:echo(texture)
+                    Material.set_texture(material, texure_slot_name, texture)
+
+                    self.frame_numbers[mat_slot][slot_type]["current_number"] = frame_number + 1
+                    if frame_number == max_frame_number and loop_list[mat_slot][slot_type] then
+                        self.frame_numbers[mat_slot][slot_type]["loops"] = self.frame_numbers[mat_slot][slot_type]["loops"] + 1
+                        local max_loops = self.num_of_loops[mat_slot][slot_type]
+
+                        if self.frame_numbers[mat_slot][slot_type]["loops"] > max_loops and (max_loops ~=-1) then
+                            self.loop_on_spawn[mat_slot][slot_type] = false
+                        end
+                    end
+                    self.unit_time[mat_slot][slot_type] = 0
+                end
+                self.unit_time[mat_slot][slot_type] = self.unit_time[mat_slot][slot_type] + dt
             end
-            self.unit_time[mat_slot][slot_type] = self.unit_time[mat_slot][slot_type] + dt
         end 
     end
 end
