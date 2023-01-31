@@ -184,7 +184,7 @@ AnimTextureExtension.update = function (self, dt, unit)
                     local texture = self.aniamted_channels[mat_slot][slot_type][frame_number]
                     local texure_slot_name = self.texture_slot_names[slot_type]
 
-                    mod:echo(texture)
+                    -- mod:echo(texture)
                     Material.set_texture(material, texure_slot_name, texture)
 
                     self.frame_numbers[mat_slot][slot_type]["current_number"] = frame_number + 1
