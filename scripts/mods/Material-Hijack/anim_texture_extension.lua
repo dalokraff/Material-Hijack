@@ -11,6 +11,10 @@ local function dump(o)
        return tostring(o)
     end
 end
+
+local unit_alive = Unit.alive
+local material_set_texture = Material.set_texture
+
 AnimTextureExtension = class(AnimTextureExtension)
 
 AnimTextureExtension.init = function (self, unit)
@@ -137,7 +141,7 @@ AnimTextureExtension.get_materials = function (self, unit)
         local mesh = Unit.mesh(unit, i)
         local num_mats = Mesh.num_materials(mesh)
         for j = 0, num_mats - 1, 1 do
-            for _,mat_slot in pairs(mat_slots) do 
+            for _,mat_slot in ipairs(mat_slots) do 
                 if Mesh.has_material(mesh, mat_slot) then
                     local material = Mesh.material(mesh, mat_slot)
                     self.unit_mat_dict[mat_slot] = material
@@ -162,7 +166,7 @@ AnimTextureExtension.get_texture_slot_names = function (self, unit, slot_type)
 end
 
 AnimTextureExtension.update = function (self, dt, unit)    
-    if not Unit.alive(unit) then
+    if not unit_alive(unit) then
         self:destroy()
         return
     end
@@ -185,7 +189,7 @@ AnimTextureExtension.update = function (self, dt, unit)
                     local texure_slot_name = self.texture_slot_names[slot_type]
 
                     -- mod:echo(texture)
-                    Material.set_texture(material, texure_slot_name, texture)
+                    material_set_texture(material, texure_slot_name, texture)
 
                     self.frame_numbers[mat_slot][slot_type]["current_number"] = frame_number + 1
                     if frame_number == max_frame_number and loop_list[mat_slot][slot_type] then
